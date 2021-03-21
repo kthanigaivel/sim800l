@@ -1,9 +1,18 @@
-from machine import UART , Pin
+from machine import UART,Pin
+import time
+uart=UART(0,baudrate=9600,tx=Pin(0),rx=Pin(1))
 
-TERMINATION_CHAR = '\x1a'
+def writedata(command):
+    TERMINATION_CHAR = '\n\r'
+    rxData=bytes()
+    uart.write(b''+command+ b'' + TERMINATION_CHAR)
+    time.sleep(0.1)
+    while uart.any()>0:
+        rxData += uart.readline()
+    print(rxData.decode('utf-8'))
+#CONNECTION SUCCESS IF RETURN OK
+writedata('AT')
 
-TXD_PIN = 'GP0'
-RXD_PIN = 'GP1'
 
-uart = UART(1, baudrate=9600, pins=(TXD_PIN, RXD_PIN))
+writedata('ATA')
  
